@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common/src/exception.dart'; // ignore: implementation_imports
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' as ffi;
 import 'package:sqflite_sqlcipher/src/database_sql_cipher_impl.dart';
 import 'package:flutter/services.dart';
 
@@ -14,7 +15,13 @@ const String sqliteErrorCode = "sqlite_error";
 DatabaseFactory? _databaseFactory;
 
 /// Default factory
-DatabaseFactory get databaseFactory => sqlfliteSqlCipherDatabaseFactory;
+DatabaseFactory get databaseFactory {
+  if (Platform.isWindows || Platform.isLinux) {
+    return ffi.databaseFactoryFfi;
+  } else {
+    return sqlfliteSqlCipherDatabaseFactory;
+  }
+}
 
 /// Default factory
 DatabaseFactory get sqlfliteSqlCipherDatabaseFactory =>
